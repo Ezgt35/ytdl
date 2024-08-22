@@ -3,37 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YT Downloader</title>
+    <title>YouTube Video Downloader</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            margin-top: 20px;
+        }
+        #search-form {
+            margin-top: 20px;
+            text-align: center;
+        }
+        #results {
+            margin-top: 20px;
+            width: 80%;
+        }
+        .video-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>YouTube Downloader</h1>
-    <input type="text" id="search-query" placeholder="Cari video di YouTube">
-    <button onclick="searchVideo()">Cari</button>
+    <h1>YouTube Video Downloaders</h1>
+    <div id="search-form">
+        <input type="text" id="search-query" placeholder="Search for videos">
+        <button onclick="searchVideo()">Search</button>
+    </div>
     <div id="results"></div>
 
     <script>
         async function searchVideo() {
             const query = document.getElementById('search-query').value;
-            const response = await fetch(`/api/search?q=${query}`);
-            const data = await response.json();
+            try {
+                // Make request to search API
+                const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
 
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '';
+                // Parse JSON response
+                const data = await response.json();
+                console.log('Search Results:', data); // Log search results
 
-            data.forEach(video => {
-                const videoDiv = document.createElement('div');
-                videoDiv.innerHTML = `
-                    <h3>${video.title}</h3>
-                    <button onclick="downloadVideo('${video.id}', 'mp3')">Download MP3</button>
-                    <button onclick="downloadVideo('${video.id}', 'mp4')">Download MP4</button>
-                `;
-                resultsDiv.appendChild(videoDiv);
-            });
+                // Clear previous results
+                const resultsDiv = document.getElementById('results');
+                resultsDiv.innerHTML = '';
+
+                // Display new results
+                data.forEach(video => {
+                    const videoDiv = document.createElement('div');
+                    videoDiv.className = 'video-item';
+                    videoDiv.innerHTML = `
+                        <h3>${video.title}</h3>
+                        <p><strong>Channel:</strong> ${video.author.name}</p>
+                        <p><strong>Duration:</strong> ${video.duration}</p>
+                        <img src="${video.thumbnail}" alt="${video.title}" width="200">
+                        <br>
+                        <button onclick="downloadVideo('${video.id}', 'mp3')">Download MP3</button>
+                        <button onclick="downloadVideo('${video.id}', 'mp4')">Download MP4</button>
+                    `;
+                    resultsDiv.appendChild(videoDiv);
+                });
+            } catch (error) {
+                console.error('Error fetching search results:', error);
+                alert('Error fetching search results. Check the console for details.');
+            }
         }
 
         function downloadVideo(id, format) {
-            window.location.href = `/api/download?id=${id}&format=${format}`;
+            window.location.href = `/api/download?id=${encodeURIComponent(id)}&format=${format}`;
         }
     </script>
 </body>
-      </html>
+</html>
