@@ -8,7 +8,7 @@
   "dependencies": {
   "express": "^4.18.2",
   "ytsr": "^3.6.0",
-  "ytdl-core": "^4.11.0",  // Ubah versi menjadi versi terbaru yang tersedia
+  "ytdl-core": "^4.11.0", 
   "@vercel/node": "^2.6.5"
   }
 }
