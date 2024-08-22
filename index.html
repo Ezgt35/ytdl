@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YT Downloader</title>
+</head>
+<body>
+    <h1>YouTube Downloader</h1>
+    <input type="text" id="search-query" placeholder="Cari video di YouTube">
+    <button onclick="searchVideo()">Cari</button>
+    <div id="results"></div>
+
+    <script>
+        async function searchVideo() {
+            const query = document.getElementById('search-query').value;
+            const response = await fetch(`/api/search?q=${query}`);
+            const data = await response.json();
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+
+            data.forEach(video => {
+                const videoDiv = document.createElement('div');
+                videoDiv.innerHTML = `
+                    <h3>${video.title}</h3>
+                    <button onclick="downloadVideo('${video.id}', 'mp3')">Download MP3</button>
+                    <button onclick="downloadVideo('${video.id}', 'mp4')">Download MP4</button>
+                `;
+                resultsDiv.appendChild(videoDiv);
+            });
+        }
+
+        function downloadVideo(id, format) {
+            window.location.href = `/api/download?id=${id}&format=${format}`;
+        }
+    </script>
+</body>
+      </html>
