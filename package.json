@@ -1,14 +1,12 @@
 {
-  "name": "yt-downloader",
+  "name": "y2meta-vercel",
   "version": "1.0.0",
+  "description": "API to fetch data from y2meta",
   "main": "index.js",
   "scripts": {
     "start": "vercel dev"
   },
   "dependencies": {
-  "express": "^4.18.2",
-  "ytsr": "^3.6.0",
-  "ytdl-core": "^4.11.0", 
-  "@vercel/node": "^2.6.5"
+    "node-fetch": "^3.3.0"
   }
 }
